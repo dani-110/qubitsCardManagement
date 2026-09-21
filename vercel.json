@@ -1,13 +1,10 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "pnpm run build",
   "outputDirectory": "dist/client",
-  "routes": [
+  "rewrites": [
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/_next/$1"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
