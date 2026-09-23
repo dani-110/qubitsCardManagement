@@ -4,10 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import {
   Activity, AlertTriangle, ArrowDownRight, ArrowUpRight, BarChart3,
   Bell, Blocks, ChevronDown, CircleDollarSign, CreditCard, FileCheck2,
-  Fingerprint, Gauge, KeyRound, LayoutDashboard, LockKeyhole,
-  MoreHorizontal, Plus, RefreshCw, Search, Settings, ShieldCheck,
+  Building2, Fingerprint, Fuel, Gauge, Gift, KeyRound, LayoutDashboard, LockKeyhole,
+  MoreHorizontal, Plus, RefreshCw, Repeat2, Route, Search, Settings, ShieldCheck,
   SlidersHorizontal, Smartphone, Snowflake, Sparkles, UsersRound,
-  WalletCards, Wifi, X,
+  QrCode, Store, WalletCards, Wifi, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,11 +27,27 @@ const nav = [
   { label: "Cards", icon: CreditCard, count: "24.8k" },
   { label: "Customers", icon: UsersRound },
   { label: "Transactions", icon: Activity },
+  { label: "Rewards & Loyalty", icon: Sparkles, count: "18" },
+  { label: "Authorization Data", icon: Gauge, count: "120+" },
+  { label: "Merchant Network", icon: Store },
+  { label: "Corporate Gifting", icon: Building2 },
+  { label: "Redemptions", icon: QrCode },
   { label: "Controls & Limits", icon: SlidersHorizontal },
   { label: "Fraud & Risk", icon: ShieldCheck, count: "12" },
   { label: "Disputes", icon: FileCheck2, count: "8" },
   { label: "Tokenization", icon: Smartphone },
   { label: "Card Programs", icon: WalletCards },
+];
+
+const cardProducts = [
+  { label: "Gift Cards", icon: Gift, count: "6.2k" },
+  { label: "Fuel Cards", icon: Fuel, count: "1.8k" },
+  { label: "Employee Cards", icon: UsersRound, count: "3.4k" },
+  { label: "Expense Cards", icon: FileCheck2, count: "4.9k" },
+  { label: "Wallet Cards", icon: Smartphone, count: "8.7k" },
+  { label: "Hybrid Cards", icon: Repeat2 },
+  { label: "Digital Cards", icon: Fingerprint },
+  { label: "Funding Routing", icon: Route },
 ];
 
 const platform = [
@@ -79,7 +95,7 @@ export default function Home() {
   const [atmLimit, setAtmLimit] = useState("100000");
   const [period, setPeriod] = useState("30 days");
   const filtered = useMemo(() => cards.filter((card) => `${card.holder} ${card.pan} ${card.program}`.toLowerCase().includes(query.toLowerCase())), [query]);
-  const searchResults = useMemo(() => [...nav, ...platform].filter(item => item.label.toLowerCase().includes(globalQuery.toLowerCase())).slice(0, 5), [globalQuery]);
+  const searchResults = useMemo(() => [...nav, ...cardProducts, ...platform].filter(item => item.label.toLowerCase().includes(globalQuery.toLowerCase())).slice(0, 5), [globalQuery]);
 
   useEffect(() => {
     if (active !== "Overview") setInspectorOpen(false);
@@ -100,7 +116,7 @@ export default function Home() {
 
   const runGlobalSearch = (term = globalQuery) => {
     if (!term.trim()) return;
-    const match = [...nav, ...platform].find(item => item.label.toLowerCase().includes(term.toLowerCase()));
+    const match = [...nav, ...cardProducts, ...platform].find(item => item.label.toLowerCase().includes(term.toLowerCase()));
     if (match) {
       setActive(match.label);
       setGlobalQuery("");
@@ -125,6 +141,12 @@ export default function Home() {
           <div className="brand-mark"><span>Q</span><div><strong>QUBITS</strong><small>CARD OS</small></div></div>
         </SidebarHeader>
         <SidebarContent className="px-3">
+          <SidebarGroup>
+            <p className="nav-label">CARD PRODUCTS</p>
+            <SidebarGroupContent><SidebarMenu>
+              {cardProducts.map((item) => <SidebarMenuItem key={item.label}><SidebarMenuButton onClick={() => { setActive(item.label); setGlobalQuery(""); setInspectorOpen(false); }} isActive={active === item.label} tooltip={item.label} className="nav-item product-nav-item"><item.icon /><span>{item.label}</span>{item.count && <b>{item.count}</b>}</SidebarMenuButton></SidebarMenuItem>)}
+            </SidebarMenu></SidebarGroupContent>
+          </SidebarGroup>
           <SidebarGroup>
             <p className="nav-label">WORKSPACE</p>
             <SidebarGroupContent>
@@ -161,7 +183,7 @@ export default function Home() {
             <button className="icon-button notification" aria-label="Notifications" onClick={() => setNotificationsOpen(value => !value)}><Bell /><i /></button>
             <Dialog open={issueOpen} onOpenChange={setIssueOpen}><DialogTrigger asChild><Button className="new-card"><Plus />Issue card</Button></DialogTrigger>
               <DialogContent className="max-w-md"><DialogHeader><DialogTitle>Issue a new card</DialogTitle><DialogDescription>Start a secure card-issuance workflow for a customer or business.</DialogDescription></DialogHeader>
-                <div className="issue-grid"><label>Customer<Input value={issueCustomer} onChange={event => setIssueCustomer(event.target.value)} placeholder="Search customer or CNIC" /></label><label>Card program<select><option>Platinum Debit</option><option>Business Expense</option><option>Virtual Prepaid</option></select></label><label>Fulfilment<select><option>Instant virtual card</option><option>Branch pickup</option><option>Courier delivery</option></select></label><Button disabled={!issueCustomer.trim()} onClick={() => { setIssueOpen(false); setIssueCustomer(""); notify("Card issuance request created", "success"); }}>Create issuance request</Button></div>
+                <div className="issue-grid"><label>Customer or employee<Input value={issueCustomer} onChange={event => setIssueCustomer(event.target.value)} placeholder="Search customer, employee or CNIC" /></label><label>Card program<select><option>Platinum Debit</option><option>Business Expense</option><option>Employee Allowance</option><option>Fleet Fuel Prepaid</option><option>Wallet-linked Virtual</option><option>Digital Gift</option></select></label><label>Fulfilment<select><option>Instant virtual card</option><option>Branch pickup</option><option>Courier delivery</option><option>Corporate bulk delivery</option></select></label><Button disabled={!issueCustomer.trim()} onClick={() => { setIssueOpen(false); setIssueCustomer(""); notify("Card issuance request created", "success"); }}>Create issuance request</Button></div>
               </DialogContent>
             </Dialog>
           </div>
